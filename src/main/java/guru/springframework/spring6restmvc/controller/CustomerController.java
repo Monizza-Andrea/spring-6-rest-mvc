@@ -51,8 +51,9 @@ public class CustomerController {
     @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<CustomerDTO> updateById (@PathVariable UUID customerId, @RequestBody CustomerDTO customer) {
 
-
-        customerService.updateExistingCustomerById(customerId, customer);
+        if (customerService.updateExistingCustomerById(customerId, customer).isEmpty()){
+            throw new NotFoundException();
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", CUSTOMER_PATH + "/" + customerId);
@@ -63,7 +64,9 @@ public class CustomerController {
     @PatchMapping(CUSTOMER_PATH_ID)
     public ResponseEntity patchById(@PathVariable UUID customerId, @RequestBody CustomerDTO customer) {
 
-        customerService.patchCustomerById(customerId, customer);
+        if (customerService.patchCustomerById(customerId, customer).isEmpty()){
+            throw new NotFoundException();
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -72,7 +75,10 @@ public class CustomerController {
     @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteById (@PathVariable UUID customerId) {
         log.debug("Deleting Beer by Id - " + customerId);
-        customerService.deleteById(customerId);
+
+        if (!customerService.deleteById(customerId)){
+            throw new NotFoundException();
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

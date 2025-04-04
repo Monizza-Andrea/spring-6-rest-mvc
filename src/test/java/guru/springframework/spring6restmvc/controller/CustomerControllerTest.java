@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springframework.spring6restmvc.model.CustomerDTO;
 import guru.springframework.spring6restmvc.services.CustomerService;
 import guru.springframework.spring6restmvc.services.CustomerServiceImpl;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -11,6 +12,7 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -60,6 +62,7 @@ public class CustomerControllerTest {
 //
 //        customer.setCustomerName("Testato e aggiornato");
 //        System.out.println(customer.toString());
+        given(customerService.updateExistingCustomerById(any(), any())).willReturn(Optional.of(customer));
 
 
         mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
@@ -122,6 +125,8 @@ public class CustomerControllerTest {
     void testDeleteBeer() throws Exception {
         CustomerDTO customer = customerServiceImpl.listCustomer().get(0);
 
+        given(customerService.deleteById(any())).willReturn(true);
+
         mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customer.getId().toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -140,6 +145,8 @@ public class CustomerControllerTest {
         Map<String, Object> customerMap = new HashMap<>();
         customerMap.put("customerName", "New Name");
 
+        given(customerService.patchCustomerById(any(), any())).willReturn(Optional.of(customer));
+
         mockMvc.perform(patch(CustomerController.CUSTOMER_PATH_ID, customer.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -150,4 +157,6 @@ public class CustomerControllerTest {
         assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
         assertThat(customerMap.get("customerName")).isEqualTo(customerArgumentCaptor.getValue().getCustomerName());
     }
+
+
 }
