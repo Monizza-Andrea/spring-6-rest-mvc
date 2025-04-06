@@ -30,7 +30,7 @@ public class BeerDTO {
 
     @NotBlank
     @NotNull
-    @Size(max = 50)
+    @Size(max = 255)
     private String upc;
     private Integer quantityOnHand;
 
