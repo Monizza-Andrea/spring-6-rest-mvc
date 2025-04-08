@@ -1,5 +1,7 @@
 package guru.springframework.spring6restmvc.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Version;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,4 +17,7 @@ public class CustomerDTO {
     private Integer version;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
+
+    @Column(length = 255)
+    private String email;
 }
