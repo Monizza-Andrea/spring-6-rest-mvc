@@ -1,6 +1,7 @@
 package guru.springframework.spring6restmvc.controller;
 
 import guru.springframework.spring6restmvc.model.BeerDTO;
+import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.services.BeerService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,10 @@ public class BeerController {
     public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
     @GetMapping(BEER_PATH)
-    public List<BeerDTO> listBeer() {
-
-        return beerService.listBeers();
+    public List<BeerDTO> listBeer(@RequestParam(required = false) String beerName,
+                                  @RequestParam(required = false) BeerStyle beerStyle,
+                                  @RequestParam(required = false) Boolean showInventory) {
+        return beerService.listBeers(beerName, beerStyle, showInventory);
     }
 
     @PostMapping(BEER_PATH)
